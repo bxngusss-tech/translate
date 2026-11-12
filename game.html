@@ -3,124 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Game</title>
+  <title>Playing Game</title>
   <style>
     body {
       margin: 0;
-      padding: 20px;
-      background-color: #1e1e2e;
-      color: #cdd6f4;
+      padding: 0;
+      background-color: #121212;
+      color: #ffffff;
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: calc(100vh - 40px);
-      text-align: center;
+      height: 100vh;
     }
-    .score-box {
-      font-size: 48px;
-      font-weight: bold;
-      margin: 20px 0;
-      color: #a6e3a1;
+    .top-bar {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      box-sizing: border-box;
     }
-    button {
-      padding: 12px 24px;
-      font-size: 18px;
-      font-weight: bold;
+    a.back-btn, button.fs-btn {
+      background-color: #313244;
+      color: #ffffff;
       border: none;
+      padding: 10px 16px;
       border-radius: 6px;
-      cursor: pointer;
-      margin: 5px;
-      transition: transform 0.1s;
-    }
-    button:active {
-      transform: scale(0.96);
-    }
-    .btn-score {
-      background-color: #89b4fa;
-      color: #11111b;
-    }
-    .btn-reset {
-      background-color: #f38ba8;
-      color: #11111b;
-    }
-    .status {
-      margin-top: 15px;
+      text-decoration: none;
       font-size: 14px;
-      color: #a6adc8;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    a.back-btn:hover, button.fs-btn:hover {
+      background-color: #45475a;
+    }
+    iframe {
+      width: 900px;
+      height: 600px;
+      max-width: 95vw;
+      max-height: 80vh;
+      border: 3px solid #333;
+      border-radius: 8px;
+      background-color: #000;
     }
   </style>
 </head>
 <body>
 
-  <h2>Test Clicker Game</h2>
-  <p>Click the button to earn points. Refresh the page to verify your progress saves!</p>
-
-  <div class="score-box" id="scoreDisplay">0</div>
-
-  <div>
-    <button class="btn-score" onclick="addPoint()">+1 Point</button>
-    <button class="btn-reset" onclick="resetScore()">Reset Save</button>
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">← Back to Games</a>
+    <span><strong>Clicker Game</strong></span>
+    <button class="fs-btn" onclick="goFullscreen()">Fullscreen ⛶</button>
   </div>
 
-  <div class="status" id="statusMessage">Checking storage...</div>
+  <!-- The iframe loads the actual game and grants storage permissions -->
+  <iframe 
+    id="gameFrame"
+    src="" 
+    sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-storage-access-by-user-activation"
+    allowfullscreen>
+  </iframe>
 
   <script>
-    const SAVE_KEY = "my_test_game_score";
-    let score = 0;
-
-    // Load saved progress when the game starts
-    function loadProgress() {
-      try {
-        const saved = localStorage.getItem(SAVE_KEY);
-        if (saved !== null) {
-          score = parseInt(saved, 10);
-          updateStatus("Save data loaded successfully!");
-        } else {
-          updateStatus("No previous save found. Starting at 0.");
-        }
-      } catch (e) {
-        updateStatus("Error: Browser blocked storage access inside iframe.");
-      }
-      updateDisplay();
-    }
-
-    // Add a point and save immediately
-    function addPoint() {
-      score++;
-      updateDisplay();
-      saveProgress();
-    }
-
-    // Save current score to localStorage
-    function saveProgress() {
-      try {
-        localStorage.setItem(SAVE_KEY, score);
-        updateStatus("Progress saved!");
-      } catch (e) {
-        updateStatus("Failed to save progress.");
+    function goFullscreen() {
+      const iframe = document.getElementById("gameFrame");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
       }
     }
-
-    // Reset the saved score
-    function resetScore() {
-      score = 0;
-      localStorage.removeItem(SAVE_KEY);
-      updateDisplay();
-      updateStatus("Save data cleared.");
-    }
-
-    function updateDisplay() {
-      document.getElementById("scoreDisplay").innerText = score;
-    }
-
-    function updateStatus(msg) {
-      document.getElementById("statusMessage").innerText = msg;
-    }
-
-    // Initialize game
-    loadProgress();
   </script>
 
 </body>
