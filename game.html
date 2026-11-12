@@ -1,139 +1,127 @@
-HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 380px;
-        }
-        h2 { margin-top: 0; color: #333; text-align: center; }
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0 16px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-        button:hover { background-color: #0056b3; }
-        .secondary-btn { background-color: #6c757d; }
-        .secondary-btn:hover { background-color: #545b62; }
-        .danger-btn { background-color: #dc3545; margin-top: 10px; }
-        .danger-btn:hover { background-color: #a71d2a; }
-        .message {
-            text-align: center;
-            font-size: 14px;
-            margin-bottom: 10px;
-            min-height: 20px;
-            color: #28a745;
-        }
-        .stats-box {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .score-display {
-            font-size: 28px;
-            font-weight: bold;
-            color: #007bff;
-            margin: 5px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #1e1e2e;
+      color: #cdd6f4;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 40px);
+      text-align: center;
+    }
+    .score-box {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #a6e3a1;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
+      transition: transform 0.1s;
+    }
+    button:active {
+      transform: scale(0.96);
+    }
+    .btn-score {
+      background-color: #89b4fa;
+      color: #11111b;
+    }
+    .btn-reset {
+      background-color: #f38ba8;
+      color: #11111b;
+    }
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #a6adc8;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Welcome, <span id="display-username"></span>!</h2>
-    <div id="dash-message" class="message"></div>
+  <h2>Test Clicker Game</h2>
+  <p>Click the button to earn points. Refresh the page to verify your progress saves!</p>
 
-    <div class="stats-box">
-        <div>Current Level / Score</div>
-        <div class="score-display" id="user-score">0</div>
-        <button type="button" class="secondary-btn" onclick="increaseScore()">+ Increase Progress</button>
-    </div>
+  <div class="score-box" id="scoreDisplay">0</div>
 
-    <label for="user-notes">Your Saved Notes:</label>
-    <textarea id="user-notes" rows="4" placeholder="Type something here to save to your account..."></textarea>
+  <div>
+    <button class="btn-score" onclick="addPoint()">+1 Point</button>
+    <button class="btn-reset" onclick="resetScore()">Reset Save</button>
+  </div>
 
-    <button type="button" onclick="saveProgress()">Save Progress</button>
-    <button type="button" class="danger-btn" onclick="logout()">Sign Out</button>
-</div>
+  <div class="status" id="statusMessage">Checking storage...</div>
 
-<script>
-    const currentUser = sessionStorage.getItem('activeUser');
+  <script>
+    const SAVE_KEY = "my_test_game_score";
+    let score = 0;
 
-    // Security check: If nobody is logged in, send back to login page
-    if (!currentUser) {
-        window.location.href = 'index.html';
-    } else {
-        // Load user data when page opens
-        const users = JSON.parse(localStorage.getItem('app_users'));
-        const userData = users[currentUser];
-
-        document.getElementById('display-username').textContent = currentUser;
-        document.getElementById('user-score').textContent = userData.progress.score;
-        document.getElementById('user-notes').value = userData.progress.notes;
+    // Load saved progress when the game starts
+    function loadProgress() {
+      try {
+        const saved = localStorage.getItem(SAVE_KEY);
+        if (saved !== null) {
+          score = parseInt(saved, 10);
+          updateStatus("Save data loaded successfully!");
+        } else {
+          updateStatus("No previous save found. Starting at 0.");
+        }
+      } catch (e) {
+        updateStatus("Error: Browser blocked storage access inside iframe.");
+      }
+      updateDisplay();
     }
 
-    function increaseScore() {
-        const scoreEl = document.getElementById('user-score');
-        let currentScore = parseInt(scoreEl.textContent);
-        scoreEl.textContent = currentScore + 1;
+    // Add a point and save immediately
+    function addPoint() {
+      score++;
+      updateDisplay();
+      saveProgress();
     }
 
+    // Save current score to localStorage
     function saveProgress() {
-        const users = JSON.parse(localStorage.getItem('app_users'));
-        const currentScore = parseInt(document.getElementById('user-score').textContent);
-        const currentNotes = document.getElementById('user-notes').value;
-
-        users[currentUser].progress = {
-            score: currentScore,
-            notes: currentNotes
-        };
-
-        localStorage.setItem('app_users', JSON.stringify(users));
-
-        const dashMessage = document.getElementById('dash-message');
-        dashMessage.textContent = 'Progress saved!';
-        setTimeout(() => { dashMessage.textContent = ''; }, 2500);
+      try {
+        localStorage.setItem(SAVE_KEY, score);
+        updateStatus("Progress saved!");
+      } catch (e) {
+        updateStatus("Failed to save progress.");
+      }
     }
 
-    function logout() {
-        sessionStorage.removeItem('activeUser');
-        window.location.href = 'index.html';
+    // Reset the saved score
+    function resetScore() {
+      score = 0;
+      localStorage.removeItem(SAVE_KEY);
+      updateDisplay();
+      updateStatus("Save data cleared.");
     }
-</script>
+
+    function updateDisplay() {
+      document.getElementById("scoreDisplay").innerText = score;
+    }
+
+    function updateStatus(msg) {
+      document.getElementById("statusMessage").innerText = msg;
+    }
+
+    // Initialize game
+    loadProgress();
+  </script>
 
 </body>
 </html>
