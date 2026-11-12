@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Progress Saver</title>
+    <title>Login</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -22,12 +22,8 @@
             width: 100%;
             max-width: 380px;
         }
-        h2 {
-            margin-top: 0;
-            color: #333;
-            text-align: center;
-        }
-        input, textarea {
+        h2 { margin-top: 0; color: #333; text-align: center; }
+        input {
             width: 100%;
             padding: 10px;
             margin: 8px 0 16px 0;
@@ -45,125 +41,57 @@
             border-radius: 4px;
             font-size: 16px;
             cursor: pointer;
-            margin-bottom: 10px;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .secondary-btn {
-            background-color: #6c757d;
-        }
-        .secondary-btn:hover {
-            background-color: #545b62;
-        }
-        .danger-btn {
-            background-color: #dc3545;
-            margin-top: 10px;
-        }
-        .danger-btn:hover {
-            background-color: #a71d2a;
-        }
+        button:hover { background-color: #0056b3; }
         .toggle-link {
             text-align: center;
             display: block;
             color: #007bff;
             cursor: pointer;
             font-size: 14px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
-        .toggle-link:hover {
-            text-decoration: underline;
-        }
-        .message {
-            text-align: center;
-            font-size: 14px;
-            margin-bottom: 10px;
-            min-height: 20px;
-        }
+        .toggle-link:hover { text-decoration: underline; }
+        .message { text-align: center; font-size: 14px; margin-bottom: 10px; min-height: 20px; }
         .error { color: #dc3545; }
         .success { color: #28a745; }
-        .hidden { display: none; }
-        .stats-box {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .score-display {
-            font-size: 28px;
-            font-weight: bold;
-            color: #007bff;
-            margin: 5px 0;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- AUTHENTICATION SECTION -->
-    <div id="auth-section">
-        <h2 id="form-title">Sign In</h2>
-        <div id="auth-message" class="message"></div>
+    <h2 id="form-title">Sign In</h2>
+    <div id="auth-message" class="message"></div>
+    
+    <form id="auth-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" required placeholder="Enter username">
         
-        <form id="auth-form">
-            <label for="username">Username</label>
-            <input type="text" id="username" required placeholder="Enter username">
-            
-            <label for="password">Password</label>
-            <input type="password" id="password" required placeholder="Enter password">
-            
-            <button type="submit" id="submit-btn">Sign In</button>
-        </form>
+        <label for="password">Password</label>
+        <input type="password" id="password" required placeholder="Enter password">
         
-        <span class="toggle-link" id="toggle-auth">Don't have an account? Create one</span>
-    </div>
-
-    <!-- DASHBOARD / PROGRESS SECTION -->
-    <div id="dashboard-section" class="hidden">
-        <h2>Welcome, <span id="display-username"></span>!</h2>
-        <div id="dash-message" class="message success"></div>
-
-        <!-- Example Progress 1: A Score/Counter -->
-        <div class="stats-box">
-            <div>Current Level / Score</div>
-            <div class="score-display" id="user-score">0</div>
-            <button type="button" class="secondary-btn" onclick="increaseScore()">+ Increase Progress</button>
-        </div>
-
-        <!-- Example Progress 2: Saved Text/Notes -->
-        <label for="user-notes">Your Saved Notes:</label>
-        <textarea id="user-notes" rows="4" placeholder="Type something here to save to your account..."></textarea>
-
-        <button type="button" onclick="saveProgress()">Save Progress</button>
-        <button type="button" class="danger-btn" onclick="logout()">Sign Out</button>
-    </div>
+        <button type="submit" id="submit-btn">Sign In</button>
+    </form>
+    
+    <span class="toggle-link" id="toggle-auth">Don't have an account? Create one</span>
 </div>
 
 <script>
-    // State variables
     let isLoginMode = true;
-    let currentUser = null;
 
-    // DOM Elements
-    const authSection = document.getElementById('auth-section');
-    const dashboardSection = document.getElementById('dashboard-section');
     const formTitle = document.getElementById('form-title');
     const submitBtn = document.getElementById('submit-btn');
     const toggleAuth = document.getElementById('toggle-auth');
     const authForm = document.getElementById('auth-form');
     const authMessage = document.getElementById('auth-message');
-    const dashMessage = document.getElementById('dash-message');
 
-    // Check if someone is already logged in when the page loads
+    // If already logged in, send straight to game.html
     window.onload = function() {
-        const loggedInUser = sessionStorage.getItem('activeUser');
-        if (loggedInUser) {
-            loadDashboard(loggedInUser);
+        if (sessionStorage.getItem('activeUser')) {
+            window.location.href = 'game.html';
         }
     };
 
-    // Switch between Sign In and Create Account
     toggleAuth.addEventListener('click', () => {
         isLoginMode = !isLoginMode;
         authMessage.textContent = '';
@@ -178,30 +106,25 @@
         }
     });
 
-    // Handle Form Submission (Sign In or Sign Up)
     authForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
-        // Get existing users from localStorage (or create an empty object if none exist)
         const users = JSON.parse(localStorage.getItem('app_users')) || {};
 
         if (isLoginMode) {
-            // SIGN IN LOGIC
             if (users[username] && users[username].password === password) {
+                // Save active user and redirect to game.html
                 sessionStorage.setItem('activeUser', username);
-                authForm.reset();
-                loadDashboard(username);
+                window.location.href = 'game.html';
             } else {
                 showAuthMessage('Invalid username or password.', 'error');
             }
         } else {
-            // CREATE ACCOUNT LOGIC
             if (users[username]) {
                 showAuthMessage('Username already exists. Choose another.', 'error');
             } else {
-                // Create new user object with default progress
                 users[username] = {
                     password: password,
                     progress: {
@@ -211,67 +134,10 @@
                 };
                 localStorage.setItem('app_users', JSON.stringify(users));
                 showAuthMessage('Account created! You can now sign in.', 'success');
-                
-                // Automatically switch back to sign-in view
                 toggleAuth.click();
             }
         }
     });
-
-    // Load user data into the dashboard
-    function loadDashboard(username) {
-        currentUser = username;
-        const users = JSON.parse(localStorage.getItem('app_users'));
-        const userData = users[username];
-
-        // Populate UI with saved progress
-        document.getElementById('display-username').textContent = username;
-        document.getElementById('user-score').textContent = userData.progress.score;
-        document.getElementById('user-notes').value = userData.progress.notes;
-
-        // Switch views
-        authSection.classList.add('hidden');
-        dashboardSection.classList.remove('hidden');
-        dashMessage.textContent = '';
-    }
-
-    // Example function to modify progress
-    function increaseScore() {
-        const scoreEl = document.getElementById('user-score');
-        let currentScore = parseInt(scoreEl.textContent);
-        scoreEl.textContent = currentScore + 1;
-    }
-
-    // Save current dashboard state back to localStorage
-    function saveProgress() {
-        if (!currentUser) return;
-
-        const users = JSON.parse(localStorage.getItem('app_users'));
-        const currentScore = parseInt(document.getElementById('user-score').textContent);
-        const currentNotes = document.getElementById('user-notes').value;
-
-        // Update the user's progress object
-        users[currentUser].progress = {
-            score: currentScore,
-            notes: currentNotes
-        };
-
-        // Save back to localStorage
-        localStorage.setItem('app_users', JSON.stringify(users));
-
-        // Show confirmation
-        dashMessage.textContent = 'Progress saved!';
-        setTimeout(() => { dashMessage.textContent = ''; }, 2500);
-    }
-
-    // Sign out
-    function logout() {
-        currentUser = null;
-        sessionStorage.removeItem('activeUser');
-        dashboardSection.classList.add('hidden');
-        authSection.classList.remove('hidden');
-        authMessage.textContent = '';
-    }
 
     function showAuthMessage(msg, type) {
         authMessage.textContent = msg;
