@@ -1,149 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 380px;
-        }
-        h2 { margin-top: 0; color: #333; text-align: center; }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0 16px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover { background-color: #0056b3; }
-        .toggle-link {
-            text-align: center;
-            display: block;
-            color: #007bff;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 15px;
-        }
-        .toggle-link:hover { text-decoration: underline; }
-        .message { text-align: center; font-size: 14px; margin-bottom: 10px; min-height: 20px; }
-        .error { color: #dc3545; }
-        .success { color: #28a745; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unblocked Games Hub</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+    iframe {
+      width: 800px;
+      height: 500px;
+      max-width: 95vw;
+      max-height: 80vh;
+      border: 3px solid #333;
+      border-radius: 8px;
+      background-color: #000;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 id="form-title">Sign In</h2>
-    <div id="auth-message" class="message"></div>
-    
-    <form id="auth-form">
-        <label for="username">Username</label>
-        <input type="text" id="username" required placeholder="Enter username">
-        
-        <label for="password">Password</label>
-        <input type="password" id="password" required placeholder="Enter password">
-        
-        <button type="submit" id="submit-btn">Sign In</button>
-    </form>
-    
-    <span class="toggle-link" id="toggle-auth">Don't have an account? Create one</span>
-</div>
+  <h1>My Unblocked Game</h1>
 
-<script>
-    let isLoginMode = true;
-
-    const formTitle = document.getElementById('form-title');
-    const submitBtn = document.getElementById('submit-btn');
-    const toggleAuth = document.getElementById('toggle-auth');
-    const authForm = document.getElementById('auth-form');
-    const authMessage = document.getElementById('auth-message');
-
-    // If already logged in, send straight to game.html
-    window.onload = function() {
-        if (sessionStorage.getItem('activeUser')) {
-            window.location.href = 'game.html';
-        }
-    };
-
-    toggleAuth.addEventListener('click', () => {
-        isLoginMode = !isLoginMode;
-        authMessage.textContent = '';
-        if (isLoginMode) {
-            formTitle.textContent = 'Sign In';
-            submitBtn.textContent = 'Sign In';
-            toggleAuth.textContent = "Don't have an account? Create one";
-        } else {
-            formTitle.textContent = 'Create Account';
-            submitBtn.textContent = 'Sign Up';
-            toggleAuth.textContent = 'Already have an account? Sign In';
-        }
-    });
-
-    authForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-
-        const users = JSON.parse(localStorage.getItem('app_users')) || {};
-
-        if (isLoginMode) {
-            if (users[username] && users[username].password === password) {
-                // Save active user and redirect to game.html
-                sessionStorage.setItem('activeUser', username);
-                window.location.href = 'game.html';
-            } else {
-                showAuthMessage('Invalid username or password.', 'error');
-            }
-        } else {
-            if (users[username]) {
-                showAuthMessage('Username already exists. Choose another.', 'error');
-            } else {
-                users[username] = {
-                    password: password,
-                    progress: {
-                        score: 0,
-                        notes: ''
-                    }
-                };
-                localStorage.setItem('app_users', JSON.stringify(users));
-                showAuthMessage('Account created! You can now sign in.', 'success');
-                toggleAuth.click();
-            }
-        }
-    });
-
-    function showAuthMessage(msg, type) {
-        authMessage.textContent = msg;
-        authMessage.className = 'message ' + type;
-    }
-</script>
+  <!-- The sandbox attributes below allow scripts and same-origin storage to work -->
+  <iframe 
+    src="game.html" 
+    sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-storage-access-by-user-activation"
+    allowfullscreen>
+  </iframe>
 
 </body>
 </html>
