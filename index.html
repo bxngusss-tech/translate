@@ -3,54 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unblocked Games Hub</title>
+  <title>pages.dev chronicles</title>
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 40px;
-      background-color: #121212;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-      text-align: center;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .game-grid {
+
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      color: #38bdf8;
+      text-transform: lowercase;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-top: 30px;
+      width: 100%;
+      max-width: 1000px;
     }
-    .game-card {
-      background-color: #1e1e2e;
-      border: 2px solid #333;
-      border-radius: 10px;
-      padding: 20px;
-      width: 200px;
+
+    .game-btn {
+      background-color: #1e293b;
+      color: #f8fafc;
       text-decoration: none;
-      color: #fff;
-      transition: transform 0.2s, border-color 0.2s;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      text-align: center;
+      padding: 10px;
     }
-    .game-card:hover {
-      transform: translateY(-5px);
-      border-color: #89b4fa;
-    }
-    .game-card h3 {
-      margin: 0 0 10px 0;
-      color: #89b4fa;
+
+    .game-btn:hover {
+      background-color: #38bdf8;
+      color: #0f172a;
+      border-color: #38bdf8;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2);
     }
   </style>
 </head>
 <body>
 
-  <h1>Unblocked Games Hub</h1>
-  <p>Select a game below to play:</p>
+  <header>
+    <h1>pages.dev chronicles</h1>
+  </header>
 
-  <div class="game-grid">
-    <!-- Links to your game wrapper page -->
-    <a href="game.html" class="game-card">
-      <h3>Clicker Game</h3>
-      <p>Click to play and save your high score!</p>
-    </a>
-  </div>
+  <main class="grid-container">
+    <a href="drivemad.html" class="game-btn">Drive Mad</a>
+    <a href="snowrider.html" class="game-btn">Snow Rider</a>
+    <a href="angrybirds.html" class="game-btn">Angry Birds</a>
+    <a href="basketrandom.html" class="game-btn">Basket Random</a>
+    <a href="crossyroad.html" class="game-btn">Crossy Road</a>
+    <a href="stickmanhook.html" class="game-btn">Stickman Hook</a>
+    <a href="tinyfishing.html" class="game-btn">Tiny Fishing</a>
+    <a href="coreball.html" class="game-btn">Coreball</a>
+    
+    <!-- 4 Blank Buttons -->
+    <a href="game9.html" class="game-btn"></a>
+    <a href="game10.html" class="game-btn"></a>
+    <a href="game11.html" class="game-btn"></a>
+    <a href="game12.html" class="game-btn"></a>
+  </main>
 
 </body>
 </html>
