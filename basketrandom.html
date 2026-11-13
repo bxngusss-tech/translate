@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drive Mad - pages.dev chronicles</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      background-color: #1e293b;
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      background-color: #334155;
+      color: #f8fafc;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    .iframe-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      height: 75vh;
+      background-color: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #334155;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="index.html" class="btn">← Back</a>
+    <div class="controls">
+      <button class="btn" onclick="openAboutBlank()">Open in about:blank</button>
+      <button class="btn" onclick="goFullscreen()">Fullscreen</button>
+    </div>
+  </div>
+
+  <div class="iframe-wrapper">
+    <iframe id="game-frame" src="" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    // PASTE YOUR GAME LINK HERE
+    const gameUrl = "https://basket-random.pages.dev/ 
+";
+
+    // Automatically loads the URL into the iframe
+    const iframe = document.getElementById("game-frame");
+    iframe.src = gameUrl;
+
+    // Fullscreen function
+    function goFullscreen() {
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      }
+    }
+
+    // Open in about:blank tab function
+    function openAboutBlank() {
+      const win = window.open("about:blank", "_blank");
+      if (!win) {
+        alert("Pop-up blocked! Please allow pop-ups for this site.");
+        return;
+      }
+      win.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>New Tab</title>
+          <style>
+            body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+            iframe { width: 100%; height: 100%; border: none; }
+          </style>
+        </head>
+        <body>
+          <iframe src="${gameUrl}" allowfullscreen></iframe>
+        </body>
+        </html>
+      `);
+      win.document.close();
+    }
+  </script>
+
+</body>
+</html>
