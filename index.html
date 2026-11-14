@@ -9,98 +9,264 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
-      background-color: #09090b;
-      background-image: radial-gradient(circle at top, #18181b 0%, #09090b 65%);
+      background-color: #050506;
       color: #fafafa;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      padding: 60px 20px;
+      height: 100vh;
+      overflow: hidden;
+      padding: 40px 28px 28px;
+      position: relative;
+    }
+
+    /* Fullscreen Particle Canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
 
     header {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      margin-bottom: 48px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid #27272a;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       width: 100%;
-      max-width: 1000px;
+      max-width: 1320px;
+      flex-shrink: 0;
     }
 
     h1 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: #ffffff;
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(180deg, #ffffff 20%, #71717a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       text-transform: lowercase;
+    }
+
+    .scroll-area {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1320px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 14px 28px 6px;
+    }
+
+    /* Ultra-thin modern scrollbar */
+    .scroll-area::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .scroll-area::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+    }
+
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .scroll-area::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.7);
     }
 
     .grid-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+      gap: 22px;
       width: 100%;
-      max-width: 1000px;
     }
 
     .game-btn {
-      background-color: #141417;
-      color: #e4e4e7;
+      position: relative;
+      overflow: hidden;
+      background: rgba(20, 20, 23, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #d4d4d8;
       text-decoration: none;
-      border: 1px solid #27272a;
-      border-radius: 10px;
-      height: 96px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 16px;
+      height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      font-weight: 500;
-      letter-spacing: 0.2px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 1.32rem;
+      font-weight: 600;
+      letter-spacing: 0.4px;
       text-align: center;
-      padding: 12px;
+      padding: 20px;
+      transition: 
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.3s ease,
+        background-color 0.3s ease,
+        color 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+
+    /* Cursor-following white spotlight inside each card */
+    .game-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        260px circle at var(--x, 50%) var(--y, 50%),
+        rgba(255, 255, 255, 0.14),
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    /* Diagonal light shimmer sweep on hover */
+    .game-btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.12),
+        transparent
+      );
+      transform: skewX(-25deg);
+      transition: left 0.6s ease;
+      pointer-events: none;
     }
 
     .game-btn:hover {
-      background-color: #1f1f23;
+      background: rgba(32, 32, 37, 0.88);
       color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.75);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.65);
+      transform: translateY(-6px) scale(1.015);
+      box-shadow: 
+        0 18px 36px rgba(0, 0, 0, 0.85),
+        0 0 22px rgba(255, 255, 255, 0.12);
+    }
+
+    .game-btn:hover::before {
+      opacity: 1;
+    }
+
+    .game-btn:hover::after {
+      left: 160%;
     }
 
     .game-btn:active {
-      transform: translateY(-1px);
+      transform: translateY(-2px) scale(0.99);
     }
   </style>
 </head>
 <body>
 
+  <canvas id="particle-canvas"></canvas>
+
   <header>
     <h1>pages.dev chronicles</h1>
   </header>
 
-  <main class="grid-container">
-    <a href="drivemad.html" class="game-btn">Drive Mad</a>
-    <a href="snowrider.html" class="game-btn">Snow Rider</a>
-    <a href="angrybirds.html" class="game-btn">Angry Birds</a>
-    <a href="basketrandom.html" class="game-btn">Basket Random</a>
-    <a href="crossyroad.html" class="game-btn">Crossy Road</a>
-    <a href="stickmanhook.html" class="game-btn">Stickman Hook</a>
-    <a href="tinyfishing.html" class="game-btn">Tiny Fishing</a>
-    <a href="coreball.html" class="game-btn">Coreball</a>
-    
-    <!-- Extra Slots -->
-    <a href="retrobowl.html" class="game-btn">Retro Bowl</a>
-    <a href="clusterrush.html" class="game-btn">Cluster Rush</a>
-    <a href="game11.html" class="game-btn"></a>
-    <a href="game12.html" class="game-btn"></a>
-  </main>
+  <div class="scroll-area">
+    <main class="grid-container">
+      <a href="drivemad.html" class="game-btn">Drive Mad</a>
+      <a href="snowrider.html" class="game-btn">Snow Rider</a>
+      <a href="angrybirds.html" class="game-btn">Angry Birds</a>
+      <a href="basketrandom.html" class="game-btn">Basket Random</a>
+      <a href="crossyroad.html" class="game-btn">Crossy Road</a>
+      <a href="stickmanhook.html" class="game-btn">Stickman Hook</a>
+      <a href="tinyfishing.html" class="game-btn">Tiny Fishing</a>
+      <a href="coreball.html" class="game-btn">Coreball</a>
+      
+      <!-- Extra Slots -->
+      <a href="retrobowl.html" class="game-btn">Retro Bowl</a>
+      <a href="clusterrush.html" class="game-btn">Cluster Rush</a>
+      <a href="game11.html" class="game-btn"></a>
+      <a href="game12.html" class="game-btn"></a>
+    </main>
+  </div>
+
+  <script>
+    // 1. Cursor Spotlight Tracking on Cards
+    document.querySelectorAll('.game-btn').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const rect = btn.getBoundingClientRect();
+        btn.style.setProperty('--x', `${e.clientX - rect.left}px`);
+        btn.style.setProperty('--y', `${e.clientY - rect.top}px`);
+      });
+    });
+
+    // 2. Smooth Floating White Particles on Pure Black Background
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial = false) {
+        this.x = Math.random() * canvas.width;
+        this.y = initial ? Math.random() * canvas.height : canvas.height + 10;
+        this.size = Math.random() * 1.8 + 0.5;
+        this.speedY = -(Math.random() * 0.45 + 0.15);
+        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.opacity = Math.random() * 0.55 + 0.15;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.y < -10 || this.x < -10 || this.x > canvas.width + 10) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 85; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        p.update();
+        p.draw();
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+  </script>
 
 </body>
 </html>
